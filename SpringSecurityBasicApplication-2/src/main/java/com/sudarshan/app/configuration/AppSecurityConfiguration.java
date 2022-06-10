@@ -1,14 +1,18 @@
 package com.sudarshan.app.configuration;
 
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -53,27 +57,40 @@ public class AppSecurityConfiguration {
 //        return new InMemoryUserDetailsManager(admin, user);
 //    }
 	
+	// /**
+	//  * Approach-2
+	//  * 
+	//  * where we don't define password encoder
+	//  * while creating the user details. Instead a separate
+	//  * PasswordEncoder bean will be created.
+	//  * 
+	//  * @return
+	//  */
+	// @Bean
+	// public InMemoryUserDetailsManager userDetailsService() {
+    //     InMemoryUserDetailsManager userDetailsService = new InMemoryUserDetailsManager();
+    //     UserDetails admin = User.withUsername("admin").password("12345").authorities("admin").build();
+    //     UserDetails user = User.withUsername("user").password("12345").authorities("read").build();
+    //     userDetailsService.createUser(admin);
+    //     userDetailsService.createUser(user);
+    //     return userDetailsService;
+	// }
+
 	/**
-	 * Approach-2
+	 * Approach-3
 	 * 
-	 * where we don't define password encoder
-	 * while creating the user details. Instead a separate
-	 * PasswordEncoder bean will be created.
+	 * This appraoach leverages a sql Database to manage application authentication and authorization
+	 * To check find the sql script in the resources folder.
 	 * 
+	 * @param dataSource
 	 * @return
 	 */
 	@Bean
-	public InMemoryUserDetailsManager userDetailsService() {
-        InMemoryUserDetailsManager userDetailsService = new InMemoryUserDetailsManager();
-        UserDetails admin = User.withUsername("admin").password("12345").authorities("admin").build();
-        UserDetails user = User.withUsername("user").password("12345").authorities("read").build();
-        userDetailsService.createUser(admin);
-        userDetailsService.createUser(user);
-        return userDetailsService;
-	}
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+	  return new JdbcUserDetailsManager(dataSource);
+    }
 	
     /**
-     * Approach-2
      * 
      * NoOpPasswordEncoder is not recommended for production usage.
      * Use only for non-prod.

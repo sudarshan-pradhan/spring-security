@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SpringSecurityBasicApplication2Application<SpringSecurityBasicApplication-2>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.sudarshan.app.SpringSecurityBasicApplication2Application",
+            "projectName": "SpringSecurityBasicApplication-2",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
